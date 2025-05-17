@@ -3,17 +3,25 @@ var menuIndex = -1; // nenhum botão selecionado inicialmente
 var botoesMenu = ["Jogar", "Como Jogar", "Créditos"];
 var estaNoMenu = true;
 
+var imagemMenu;
+
+function preload() {
+  imagemMenu = loadImage("back.jpg");
+}
+
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  // fonte de texto
+  let canvasWidth = min(windowWidth, 800);
+  let canvasHeight = min(windowHeight, 600);
+  let canvas = createCanvas(canvasWidth, canvasHeight);
+  canvas.elt.style.display = 'block';
+  canvas.elt.style.margin = '0 auto';
+
   textFont('Special Elite');
   textAlign(CENTER, CENTER);
   textSize(24);
 }
 
 function draw() {
-  background(11, 4, 11); // fundo roxo escuro
-
   if (estado === 0) {
     menu();
   } else if (estado === 1) {
@@ -27,9 +35,13 @@ function draw() {
 
 function menu() {
   estaNoMenu = true;
+
+  background(0);
+  image(imagemMenu, 0, 0, width, height); // fundo com a imagem carregada
+
   fill(230);
   textSize(48);
-  text("Dust of Chaos", width / 2, height * 0.2);
+  text("Spectral Fear", width / 2, height * 0.2);
 
   textSize(28);
   for (var i = 0; i < botoesMenu.length; i++) {
@@ -55,7 +67,6 @@ function comoJogar() {
   fill(230);
   textSize(24);
 
-  // texto das instruções
   let instrucoes = 
     "𑁍 Explore o ambiente com cuidado.\n\n" +
     "⮃ ⮂  Use o mouse/teclas para se mover e interagir.\n\n" +
@@ -64,7 +75,6 @@ function comoJogar() {
     "？Resolva mistérios para avançar.";
 
   text(instrucoes, width / 2, height / 2);
-
   drawButton("Voltar", width / 2, height - 80, menuIndex === 0);
 }
 
@@ -74,7 +84,6 @@ function creditos() {
   fill(230);
   textSize(24);
 
-  // texto dos créditos
   var texto = "Um jogo feito por Marta Isabelle Teixeira da Costa\n\n";
   texto += "Estilo: Terror\n\n";
   texto += "Feito com p5.js";
@@ -83,13 +92,12 @@ function creditos() {
   drawButton("Voltar", width / 2, height - 80, menuIndex === 0);
 }
 
-// botão com "hover" em roxo e borda branca
 function drawButton(label, x, y, destaque) {
   if (destaque === undefined) destaque = false;
   rectMode(CENTER);
   if (destaque) {
-    fill(85, 60, 120); // roxo
-    stroke(255);         // borda branca
+    fill(85, 60, 120); // roxo escuro
+    stroke(255);       // borda branca
     strokeWeight(2);
   } else {
     fill(36, 27, 44);
@@ -111,12 +119,31 @@ function mouseClicked() {
       }
     }
   } else {
-    // Voltar
     if (mouseDentro(width / 2, height - 80, 200, 50)) {
       estado = 0;
       menuIndex = -1;
     }
   }
+}
+
+function touchEnded() {
+  if (estado === 0) {
+    for (var i = 0; i < botoesMenu.length; i++) {
+      var y = height * 0.4 + i * 70;
+      if (mouseDentro(width / 2, y, 200, 50)) {
+        estado = i + 1;
+        menuIndex = -1;
+        return false;
+      }
+    }
+  } else {
+    if (mouseDentro(width / 2, height - 80, 200, 50)) {
+      estado = 0;
+      menuIndex = -1;
+      return false;
+    }
+  }
+  return false;
 }
 
 function mouseMoved() {
@@ -145,7 +172,6 @@ function mouseDentro(cx, cy, w, h) {
          mouseY >= cy - h / 2 && mouseY <= cy + h / 2;
 }
 
-// função para controlar seleção por teclado
 function keyPressed() {
   if (estado === 0) {
     if (keyCode === UP_ARROW) {
@@ -175,4 +201,3 @@ function keyPressed() {
     }
   }
 }
-
