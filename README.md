@@ -1,2 +1,2 @@
 # js-projects
-Projects not exclusively for college
+Project not exclusively for college
